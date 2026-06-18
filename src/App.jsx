@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import ClientDashboard from "./pages/client/ClientDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
@@ -17,6 +18,15 @@ function App() {
           element={
             <ProtectedRoute allowedRoles={["client"]}>
               <ClientDashboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AdminDashboard />
             </ProtectedRoute>
           }
         />

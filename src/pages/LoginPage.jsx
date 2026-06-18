@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../services/authService";
+import { getDashboardPath } from "../utils/routing";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -17,7 +18,8 @@ function LoginPage() {
 
       localStorage.setItem("token", data.access_token);
 
-      navigate("/dashboard");
+      const role = localStorage.getItem("userRole") || "client";
+      navigate(getDashboardPath(role));
     } catch (err) {
       setError(err.message);
     }
