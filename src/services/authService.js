@@ -10,10 +10,19 @@ export async function registerUser(userData) {
   });
 
   if (!response.ok) {
-    throw new Error("Registration failed");
+    let message = "Registration failed";
+
+    try {
+      const errorData = await response.json();
+      message = errorData.detail || message;
+    } catch {
+      // Keep default message
+    }
+
+    throw new Error(message);
   }
 
-  return response;
+  return response.json();
 }
 
 export async function loginUser(email, password) {
@@ -34,5 +43,18 @@ export async function loginUser(email, password) {
     throw new Error("Invalid credentials");
   }
 
-  return response.json();
+  const data = await response.json();
+
+  const profileResponse = await fetch(`${API_BASE_URL}/users/me`, {
+    headers: {
+      Authorization: `Bearer ${data.access_token}`,
+    },
+  });
+
+  if (profileResponse.ok) {
+    const profile = await profileResponse.json();
+    localStorage.setItem("userRole", profile.role);
+  }
+
+  return data;
 }

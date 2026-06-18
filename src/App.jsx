@@ -2,31 +2,24 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import Dashboard from "./pages/Dashboard";
+import ClientDashboard from "./pages/client/ClientDashboard";
+import ProtectedRoute from "./components/common/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
 
-        {/* Login */}
-        <Route
-          path="/"
-          element={<LoginPage />}
-        />
-
-        {/* Register */}
-        <Route
-          path="/register"
-          element={<RegisterPage />}
-        />
-
-        {/* Dashboard */}
         <Route
           path="/dashboard"
-          element={<Dashboard />}
+          element={
+            <ProtectedRoute allowedRoles={["client"]}>
+              <ClientDashboard />
+            </ProtectedRoute>
+          }
         />
-
       </Routes>
     </BrowserRouter>
   );
