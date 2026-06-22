@@ -1,8 +1,10 @@
-function EmptyState({ title, description, action }) {
+import { Inbox } from "lucide-react";
+
+function EmptyState({ title, description, action, icon: Icon = Inbox }) {
   return (
     <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-slate-50 px-6 py-10 text-center">
-      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-xl">
-        ◌
+      <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+        <Icon className="h-6 w-6" />
       </div>
 
       <h3 className="text-base font-semibold text-slate-900">{title}</h3>

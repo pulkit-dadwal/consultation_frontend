@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Wallet, Calendar, UserPlus, LogOut, Menu, X, Plus } from "lucide-react";
 import Button from "../ui/Button";
 import { formatCurrency } from "../../utils/formatters";
 
 const menuItems = [
-  { label: "Transaction History", to: "/wallet/transactions", requiresAuth: true },
-  { label: "Consultation History", to: "/consultations", requiresAuth: true },
-  { label: "Become Consultant", to: "/become-consultant", requiresAuth: true },
+  { label: "Transaction History", to: "/wallet/transactions", requiresAuth: true, icon: Wallet },
+  { label: "Consultation History", to: "/consultations", requiresAuth: true, icon: Calendar },
+  { label: "Become Consultant", to: "/become-consultant", requiresAuth: true, icon: UserPlus },
 ];
 
 function SiteHeader({ user, onUserUpdate }) {
@@ -50,7 +51,7 @@ function SiteHeader({ user, onUserUpdate }) {
     <header className="sticky top-0 z-40 border-b border-slate-200/80 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-600 text-sm font-bold text-white animate-pulse">
             CC
           </div>
           <p className="text-sm font-semibold text-slate-900 sm:text-base">
@@ -60,23 +61,46 @@ function SiteHeader({ user, onUserUpdate }) {
 
         <div className="flex items-center gap-3">
           {isLoggedIn ? (
-            <>
-              <div className="hidden rounded-xl bg-emerald-50 px-3 py-2 text-right sm:block">
-                <p className="text-xs text-emerald-700">Wallet Balance</p>
-                <p className="text-sm font-semibold text-emerald-800">
+            <div className="flex items-center gap-2 rounded-xl bg-emerald-50/80 border border-emerald-100/50 px-3 py-1.5 transition text-slate-800">
+              <Wallet className="h-4.5 w-4.5 text-emerald-600 shrink-0" />
+              <div className="text-left leading-none sm:block hidden">
+                <p className="text-[9px] uppercase font-bold tracking-wider text-emerald-600">Wallet</p>
+                <p className="text-xs font-bold text-emerald-800 mt-0.5">
                   {formatCurrency(user.wallet_balance)}
                 </p>
               </div>
-
-              <Button
-                variant="secondary"
-                size="sm"
+              <div className="text-left leading-none sm:hidden block">
+                <p className="text-xs font-bold text-emerald-800">
+                  {formatCurrency(user.wallet_balance)}
+                </p>
+              </div>
+              <button
+                type="button"
+                title="Add Funds"
                 onClick={() => navigate("/wallet/add-funds")}
+                className="ml-1 flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
               >
-                Add Funds
+                <Plus className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/login")}
+              >
+                Login
               </Button>
-            </>
-          ) : null}
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => navigate("/register")}
+              >
+                Register
+              </Button>
+            </div>
+          )}
 
           <div className="relative" ref={menuRef}>
             <button
@@ -84,71 +108,40 @@ function SiteHeader({ user, onUserUpdate }) {
               aria-label="Open menu"
               aria-expanded={menuOpen}
               onClick={() => setMenuOpen((open) => !open)}
-              className="inline-flex h-10 w-10 flex-col items-center justify-center gap-1 rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-slate-200 bg-white transition hover:bg-slate-50 text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
-              <span className="block h-0.5 w-5 rounded bg-slate-700" />
-              <span className="block h-0.5 w-5 rounded bg-slate-700" />
-              <span className="block h-0.5 w-5 rounded bg-slate-700" />
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
 
             {menuOpen ? (
-              <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg">
+              <div className="absolute right-0 mt-2 w-56 overflow-hidden rounded-xl border border-slate-200 bg-white py-1 shadow-lg animate-in fade-in slide-in-from-top-2 duration-150">
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <button
+                      key={item.label}
+                      type="button"
+                      onClick={() => handleMenuNavigate(item)}
+                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
+                    >
+                      <Icon className="h-4.5 w-4.5 text-slate-400" />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
                 {isLoggedIn ? (
                   <>
-                    {menuItems.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => handleMenuNavigate(item)}
-                        className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
-                      >
-                        {item.label}
-                      </button>
-                    ))}
                     <div className="my-1 border-t border-slate-100" />
                     <button
                       type="button"
                       onClick={logout}
-                      className="block w-full px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50"
+                      className="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-sm text-rose-600 transition hover:bg-rose-50"
                     >
-                      Logout
+                      <LogOut className="h-4.5 w-4.5 text-rose-500" />
+                      <span>Logout</span>
                     </button>
                   </>
-                ) : (
-                  <>
-                    {menuItems.map((item) => (
-                      <button
-                        key={item.label}
-                        type="button"
-                        onClick={() => handleMenuNavigate(item)}
-                        className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
-                      >
-                        {item.label}
-                      </button>
-                    ))}
-                    <div className="my-1 border-t border-slate-100" />
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMenuOpen(false);
-                        navigate("/login");
-                      }}
-                      className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
-                    >
-                      Login
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setMenuOpen(false);
-                        navigate("/register");
-                      }}
-                      className="block w-full px-4 py-2.5 text-left text-sm text-slate-700 transition hover:bg-slate-50"
-                    >
-                      Register
-                    </button>
-                  </>
-                )}
+                ) : null}
               </div>
             ) : null}
           </div>

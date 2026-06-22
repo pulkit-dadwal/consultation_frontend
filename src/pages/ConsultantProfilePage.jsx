@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { User } from "lucide-react";
 import {
   fetchConsultantById,
   fetchConsultantReviews,
@@ -90,32 +91,42 @@ function ConsultantProfilePage() {
 
         <Card className="overflow-hidden">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-            <div className="space-y-4">
-              <div className="flex flex-wrap items-center gap-3">
-                <h1 className="text-3xl font-bold text-slate-900">
+            <div className="flex gap-4 items-start">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                <User className="h-8 w-8" />
+              </div>
+              <div className="space-y-3">
+                <div className="flex flex-wrap items-center gap-3">
+                  <h1 className="text-3xl font-bold text-slate-900 leading-tight">
+                    {consultant.name || "Unknown Consultant"}
+                  </h1>
+                  <Badge variant={consultant.status === "online" ? "online" : "default"}>
+                    {consultant.status}
+                  </Badge>
+                </div>
+                <p className="text-base font-semibold text-indigo-600">
                   {consultant.specialization || "General Consultant"}
-                </h1>
-                <Badge variant={consultant.status === "online" ? "online" : "default"}>
-                  {consultant.status}
-                </Badge>
-              </div>
-
-              <div className="flex flex-wrap gap-6 text-sm text-slate-600">
-                <p>
-                  <span className="font-medium text-slate-900">
-                    {Number(consultant.rating).toFixed(1)} ★
-                  </span>{" "}
-                  average rating
                 </p>
-                <p>
-                  <span className="font-medium text-slate-900">
-                    {formatCurrency(consultant.consultation_fee_per_minute)}
-                  </span>{" "}
-                  per minute
-                </p>
-                <p>{reviews.length} review{reviews.length === 1 ? "" : "s"}</p>
-              </div>
 
+                <div className="flex flex-wrap gap-6 text-sm text-slate-600">
+                  <p>
+                    <span className="font-medium text-slate-900">
+                      {Number(consultant.rating).toFixed(1)} ★
+                    </span>{" "}
+                    average rating
+                  </p>
+                  <p>
+                    <span className="font-medium text-slate-900">
+                      {formatCurrency(consultant.consultation_fee_per_minute)}
+                    </span>{" "}
+                    per minute
+                  </p>
+                  <p>{reviews.length} review{reviews.length === 1 ? "" : "s"}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-4">
               <p className="max-w-2xl text-slate-600">
                 Book a consultation session with this expert. Payment is deducted from
                 your wallet only after the consultant accepts your request.
