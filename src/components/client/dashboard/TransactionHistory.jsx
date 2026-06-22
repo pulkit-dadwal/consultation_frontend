@@ -10,7 +10,9 @@ const typeStyles = {
   received: "info",
 };
 
-function TransactionHistory({ transactions, loading }) {
+function TransactionHistory({ transactions, loading, limit = 8 }) {
+  const visibleTransactions =
+    limit === null ? transactions : transactions.slice(0, limit);
   return (
     <Card>
       <div className="mb-5 flex items-center justify-between gap-3">
@@ -45,7 +47,7 @@ function TransactionHistory({ transactions, loading }) {
               </tr>
             </thead>
             <tbody>
-              {transactions.slice(0, 8).map((transaction) => (
+              {visibleTransactions.map((transaction) => (
                 <tr
                   key={transaction.id}
                   className="border-b border-slate-50 last:border-0"

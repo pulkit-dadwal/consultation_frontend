@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { loginUser } from "../services/authService";
-import { getDashboardPath } from "../utils/routing";
+import { getPostLoginPath } from "../utils/routing";
 
 function LoginPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ function LoginPage() {
       localStorage.setItem("token", data.access_token);
 
       const role = localStorage.getItem("userRole") || "client";
-      navigate(getDashboardPath(role));
+      navigate(getPostLoginPath(role, redirectTo));
     } catch (err) {
       setError(err.message);
     }
@@ -31,15 +33,9 @@ function LoginPage() {
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md"
       >
-        <h1 className="text-3xl font-bold text-center mb-6">
-          Login
-        </h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Login</h1>
 
-        {error && (
-          <p className="text-red-500 mb-4 text-sm">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
 
         <div className="mb-4">
           <input
@@ -47,9 +43,7 @@ function LoginPage() {
             placeholder="Email"
             className="w-full border rounded-lg px-4 py-2"
             value={email}
-            onChange={(e) =>
-              setEmail(e.target.value)
-            }
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
@@ -60,9 +54,7 @@ function LoginPage() {
             placeholder="Password"
             className="w-full border rounded-lg px-4 py-2"
             value={password}
-            onChange={(e) =>
-              setPassword(e.target.value)
-            }
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
@@ -75,12 +67,22 @@ function LoginPage() {
         </button>
 
         <p className="text-center mt-4">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
-            to="/register"
+            to={
+              redirectTo
+                ? `/register?redirect=${encodeURIComponent(redirectTo)}`
+                : "/register"
+            }
             className="text-blue-600"
           >
             Register
+          </Link>
+        </p>
+
+        <p className="text-center mt-3">
+          <Link to="/" className="text-sm text-slate-500 hover:text-slate-700">
+            ← Back to home
           </Link>
         </p>
       </form>

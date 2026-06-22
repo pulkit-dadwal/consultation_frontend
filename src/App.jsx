@@ -1,8 +1,13 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
+import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import ClientDashboard from "./pages/client/ClientDashboard";
+import ConsultantProfilePage from "./pages/ConsultantProfilePage";
+import AddFundsPage from "./pages/wallet/AddFundsPage";
+import TransactionHistoryPage from "./pages/wallet/TransactionHistoryPage";
+import ConsultationHistoryPage from "./pages/ConsultationHistoryPage";
+import BecomeConsultantPage from "./pages/BecomeConsultantPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProtectedRoute from "./components/common/ProtectedRoute";
 
@@ -10,14 +15,43 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/consultants/:consultantId" element={<ConsultantProfilePage />} />
 
         <Route
-          path="/dashboard"
+          path="/wallet/add-funds"
+          element={
+            <ProtectedRoute>
+              <AddFundsPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/wallet/transactions"
+          element={
+            <ProtectedRoute>
+              <TransactionHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/consultations"
+          element={
+            <ProtectedRoute>
+              <ConsultationHistoryPage />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/become-consultant"
           element={
             <ProtectedRoute allowedRoles={["client"]}>
-              <ClientDashboard />
+              <BecomeConsultantPage />
             </ProtectedRoute>
           }
         />
@@ -30,6 +64,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/dashboard" element={<Navigate to="/" replace />} />
       </Routes>
     </BrowserRouter>
   );

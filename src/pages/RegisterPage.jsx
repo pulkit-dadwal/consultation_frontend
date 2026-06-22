@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { registerUser } from "../services/authService";
 
 function RegisterPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get("redirect");
 
   const [formData, setFormData] = useState({
     name: "",
@@ -25,7 +27,10 @@ function RegisterPage() {
 
     try {
       await registerUser(formData);
-      navigate("/");
+      const loginPath = redirectTo
+        ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+        : "/login";
+      navigate(loginPath);
     } catch (err) {
       setError(err.message);
     }
@@ -37,15 +42,9 @@ function RegisterPage() {
         onSubmit={handleSubmit}
         className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md"
       >
-        <h1 className="text-3xl font-bold text-center mb-6">
-          Register
-        </h1>
+        <h1 className="text-3xl font-bold text-center mb-6">Register</h1>
 
-        {error && (
-          <p className="text-red-500 mb-4 text-sm">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
 
         <div className="mb-4">
           <input
@@ -93,10 +92,20 @@ function RegisterPage() {
         <p className="text-center mt-4">
           Already have an account?{" "}
           <Link
-            to="/"
+            to={
+              redirectTo
+                ? `/login?redirect=${encodeURIComponent(redirectTo)}`
+                : "/login"
+            }
             className="text-blue-600"
           >
             Login
+          </Link>
+        </p>
+
+        <p className="text-center mt-3">
+          <Link to="/" className="text-sm text-slate-500 hover:text-slate-700">
+            ← Back to home
           </Link>
         </p>
       </form>

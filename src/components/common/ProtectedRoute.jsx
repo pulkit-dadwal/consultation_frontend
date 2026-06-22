@@ -1,11 +1,18 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { getDashboardPath } from "../../utils/routing";
 
 function ProtectedRoute({ children, allowedRoles = null }) {
+  const location = useLocation();
   const token = localStorage.getItem("token");
 
   if (!token) {
-    return <Navigate to="/" replace />;
+    const redirect = `${location.pathname}${location.search}`;
+    return (
+      <Navigate
+        to={`/login?redirect=${encodeURIComponent(redirect)}`}
+        replace
+      />
+    );
   }
 
   if (allowedRoles) {
