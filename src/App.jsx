@@ -10,64 +10,85 @@ import ConsultationHistoryPage from "./pages/ConsultationHistoryPage";
 import BecomeConsultantPage from "./pages/BecomeConsultantPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import ConsultantDashboard from "./pages/consultant/ConsultantDashboard";
+import { ThemeProvider } from "./context/ThemeContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/consultants/:consultantId" element={<ConsultantProfilePage />} />
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/consultants/:consultantId" element={<ConsultantProfilePage />} />
 
-        <Route
-          path="/wallet/add-funds"
-          element={
-            <ProtectedRoute>
-              <AddFundsPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Wallet Management (Shared Roles) */}
+          <Route
+            path="/wallet/add-funds"
+            element={
+              <ProtectedRoute>
+                <AddFundsPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/wallet/transactions"
-          element={
-            <ProtectedRoute>
-              <TransactionHistoryPage />
-            </ProtectedRoute>
-          }
-        />
+          <Route
+            path="/wallet/transactions"
+            element={
+              <ProtectedRoute>
+                <TransactionHistoryPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/consultations"
-          element={
-            <ProtectedRoute>
-              <ConsultationHistoryPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Consultation Tracking (Shared Roles) */}
+          <Route
+            path="/consultations"
+            element={
+              <ProtectedRoute>
+                <ConsultationHistoryPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/become-consultant"
-          element={
-            <ProtectedRoute allowedRoles={["client"]}>
-              <BecomeConsultantPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Client-Only Workflow */}
+          <Route
+            path="/become-consultant"
+            element={
+              <ProtectedRoute allowedRoles={["client"]}>
+                <BecomeConsultantPage />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route
-          path="/admin/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* Consultant Dashboard Route */}
+          <Route
+            path="/consultant/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["consultant"]}>
+                <ConsultantDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        <Route path="/dashboard" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+          {/* Admin Dashboard Route */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={["admin"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Catch-all Fallbacks */}
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

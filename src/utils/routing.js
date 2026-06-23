@@ -3,7 +3,7 @@ export const HOME_PATH = "/";
 export const DASHBOARD_PATHS = {
   client: HOME_PATH,
   admin: "/admin/dashboard",
-  consultant: HOME_PATH,
+  consultant: "/consultant/dashboard",
 };
 
 export function getDashboardPath(role) {
