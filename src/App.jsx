@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import LandingPage from "./pages/LandingPage";
 import LoginPage from "./pages/LoginPage";
+import ChatPage from "./pages/ChatPage";
 import RegisterPage from "./pages/RegisterPage";
 import ConsultantProfilePage from "./pages/ConsultantProfilePage";
 import AddFundsPage from "./pages/wallet/AddFundsPage";
@@ -23,6 +24,14 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/consultants/:consultantId" element={<ConsultantProfilePage />} />
+          <Route
+            path="/chat/:id"
+            element={
+              <ProtectedRoute allowedRoles={["client", "consultant"]}>
+                <ChatPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Wallet Management (Shared Roles) */}
           <Route
